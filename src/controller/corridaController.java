@@ -11,6 +11,7 @@ public class corridaController extends Thread {
 	private int pontuacaoTotal = 0;
 	public static int[][] colocacao = new int[25][2];
 	private static int indice = 0;
+	private static Semaphore semaforoChegada = new Semaphore(1);
 
 	public corridaController(int _id, Semaphore _semaforo) {
 		this.id = _id;
@@ -82,8 +83,6 @@ public class corridaController extends Thread {
 				if (percorrido > 5000) {
 					percorrido = 5000;
 					System.out.println("corredor-" + id + " finalizou o ciclismo");
-					pontuacaoTotal = pontacaoTiro + pontosColocacao;
-					pontosColocacao -= 10;
 
 				}
 
@@ -97,10 +96,21 @@ public class corridaController extends Thread {
 	}
 
 	private void chegada() {
-		colocacao[indice][0] = id;
-		// calculo pontuacao
-		colocacao[indice][1] = pontuacaoTotal;
-		indice++;
+		try {
+			semaforoChegada.acquire();
+			colocacao[indice][0] = id;
+			// calculo pontuacao
+			pontuacaoTotal = pontacaoTiro + pontosColocacao;
+			pontosColocacao -= 10;
+			colocacao[indice][1] = pontuacaoTotal;
+			indice++;
+
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			semaforoChegada.release();
+		}
 
 	}
 
