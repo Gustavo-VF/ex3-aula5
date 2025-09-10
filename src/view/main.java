@@ -7,7 +7,7 @@ import controller.corridaController;
 public class main {
 
 	public static void main(String[] args) {
-		Semaphore semaforo = new Semaphore(3);                // semaforo de 3 interações por vez
+		Semaphore semaforo = new Semaphore(5);                // semaforo de 3 interações por vez
 		Thread[] correr = new corridaController[25];          // criei um a tread fora do pro outro for porta acesar e criei como vetor para armazenala  
 		for (int i = 1; i < 26; i++) {                        // for inicia normalmente as 25 threads
 			correr[i-1] = new corridaController(i, semaforo);
